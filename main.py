@@ -20,7 +20,6 @@ def main():
 
     terminal_states = grid.terminal
     boulder_states = grid.boulder
-    num_iterations = 10
 
     draw_board(window, gridPolicies, [row[:-1] for row in terminal_states], boulder_states,
                max_reward(terminal_states), max_punishment(terminal_states), grid.K)
