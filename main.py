@@ -23,7 +23,7 @@ def main():
     num_iterations = 10
 
     draw_board(window, gridPolicies, [row[:-1] for row in terminal_states], boulder_states,
-               max_reward(terminal_states), max_punishment(terminal_states), num_iterations)
+               max_reward(terminal_states), max_punishment(terminal_states), grid.K)
 
     window.mainloop()
 
