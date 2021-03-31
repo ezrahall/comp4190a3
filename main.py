@@ -1,5 +1,6 @@
 # coding=utf-8
-from GridReader import GridReader
+from Grid import Grid
+from ValueIteration import ValueIteration
 import tkinter as tk
 
 
@@ -7,10 +8,15 @@ def main():
 
     window = tk.Tk()
 
-    grid = GridReader('gridConf.txt')
+    grid = Grid('gridConf.txt')
+
+    valueIteration = ValueIteration(grid)
+    grid = valueIteration.runValueIteration()
+
+    gridPolicies = grid.get_policies_()
 
     # Sample grid after 10 iterations
-    gridPolicies = grid.get_policies_()
+
 
     terminal_states = grid.terminal
     boulder_states = grid.boulder

@@ -1,20 +1,11 @@
 from State import State
 
-
-def _get_boulder_states_(inputStates):
-    result = []
-    values = inputStates.split('Boulder=')[1]
-    values = values.split('=')
-    values.pop(0)
-    for i in values:
-        i = i.split('{')
-        i = i[1].split('}')[0]
-        i = i.split(',')
-        result.append([int(i[1]), int(i[0])])
-    return result
+def _get_robot_start_state_(inputState):
+    values = inputState.split('RobotStartState={')[1].split('}')[0].split(',')
+    return [int(values[0]), int(values[1])]
 
 
-class GridReader:
+class Grid:
 
     def __init__(self, filename):
         file = open(filename, "r")
@@ -26,13 +17,13 @@ class GridReader:
         self.gridStates = []
         self._init_grid()
         self.terminal = self._get_terminal_states_(lines[2])
-        self.boulder = _get_boulder_states_(lines[3])
-        self.robotStartState = lines[4]
-        self.K = lines[5]
-        self.episodes = lines[6]
-        self.discount = lines[7]
-        self.noise = lines[8]
-        self.transactionCost = lines[9]
+        self.boulder = self._get_boulder_states_(lines[3])
+        self.robotStartState = _get_robot_start_state_(lines[4])
+        self.K = int(lines[5].split('=')[1])
+        self.episodes = int(lines[6].split('=')[1])
+        self.discount = float(lines[7].split('=')[1])
+        self.noise = float(lines[8].split('=')[1])
+        self.transactionCost = float(lines[9].split('=')[1])
 
     def _get_terminal_states_(self, inputStates):
         result = []
@@ -45,6 +36,20 @@ class GridReader:
             i = i.split(',')
             result.append([int(i[1]), int(i[0]), int(i[2])])
             self.gridStates[int(i[1])][int(i[0])].set_policy([[int(i[2]), '*']])
+            self.gridStates[int(i[1])][int(i[0])].set_terminal(True)
+        return result
+
+    def _get_boulder_states_(self, inputStates):
+        result = []
+        values = inputStates.split('Boulder=')[1]
+        values = values.split('=')
+        values.pop(0)
+        for i in values:
+            i = i.split('{')
+            i = i[1].split('}')[0]
+            i = i.split(',')
+            result.append([int(i[1]), int(i[0])])
+            self.gridStates[int(i[1])][int(i[0])].set_boulder(True)
         return result
 
     def _init_grid(self):
