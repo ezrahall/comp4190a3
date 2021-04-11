@@ -25,19 +25,87 @@ class State:
                 max = i[0]
         return max
 
-    def getPolicy(self):
+    def getPolicy(self, noise):
 
-        #no uncertanty yet
         max = self.get_max()
+        retVal = None
+
         if max == 0:
             values = []
             for v in self.policy:
                 if v[0] == 0:
                     values.append(v)
 
-            return random.choice(values)
+            retVal = random.choice(values)
+        else:
+            for v in self.policy:
+                if v[0] == max:
+                    retVal = v
 
-        for v in self.policy:
-            if v[0] == max:
-                return v
+
+        doUnexpectedMove = False
+        unexpectedMove2 = False
+        #Test if we take an unexpected move
+        if random.random() <= noise:
+            doUnexpectedMove = True
+            if random.random() <= .5:
+                #of the two remaining options, which one do we take (50/50)
+                unexpectedMove2 = True
+
+        if(retVal[1] == '↑'):
+            if doUnexpectedMove:
+                if unexpectedMove2:
+                    return self.policy[2]    #right
+                else:
+                    return self.policy[3]   #left
+            else:
+                return retVal
+
+        elif(retVal[1] == '↓'):
+            if doUnexpectedMove:
+                if unexpectedMove2:
+                    return self.policy[2]    #right
+                else:
+                    return self.policy[3]   #left
+            else:
+                return retVal
+
+        elif(retVal[1] == '→'):
+            if doUnexpectedMove:
+                if unexpectedMove2:
+                    return self.policy[0]    #up
+                else:
+                    return self.policy[1]   #down
+            else:
+                return retVal
+
+        elif(retVal[1] == '←'):
+            if doUnexpectedMove:
+                if unexpectedMove2:
+                    return self.policy[0]    #up
+                else:
+                    return self.policy[1]   #down
+            else:
+                return retVal
+
+        return retVal
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
