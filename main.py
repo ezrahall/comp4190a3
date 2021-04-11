@@ -1,6 +1,7 @@
 # coding=utf-8
 from Grid import Grid
 from ValueIteration import ValueIteration
+from QValueLearning import QValueLearning
 import tkinter as tk
 
 
@@ -10,8 +11,13 @@ def main():
 
     grid = Grid('gridConf.txt')
 
-    valueIteration = ValueIteration(grid)
-    grid = valueIteration.runValueIteration()
+    #valueIteration = ValueIteration(grid)
+    #grid = valueIteration.runValueIteration()
+
+
+    qValueLearning = QValueLearning(grid)
+    grid = qValueLearning.runQValueLearning()
+
 
     gridPolicies = grid.get_policies_()
 
@@ -65,11 +71,13 @@ def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, ite
 
     canvas = tk.Canvas(window, width=canvas_width, height=canvas_height, background='black')  # Create a black background
 
-    for row in range(rows):  # Loop through the rows of the grid
+    for row in range(rows - 1, -1, -1):  # Loop through the rows of the grid
         for col in range(cols):  # Loop through the columns of the grid
+            print(row, col)
             if [row, col] not in boulders:  # If it's not a boulder state
                 x1 = edge_dist + col * ((canvas_width - 2 * edge_dist) / cols)  # Top left x coordinate of the rectangle
-                y1 = edge_dist + row * ((canvas_height - edge_dist - bottom_space) / rows)  # Top left y coordinate of the rectangle
+                y1 = edge_dist + (rows - row - 1) * ((canvas_height - edge_dist - bottom_space) / rows)  # Top left y coordinate of the rectangle
+                print(x1, y1)
                 x2 = x1 + ((canvas_width - 2 * edge_dist) / cols)  # Bottom right x coordinate of the rectangle
                 y2 = y1 + ((canvas_height - edge_dist - bottom_space) / rows)  # Bottom right y coordinate of the rectangle
 
@@ -88,6 +96,7 @@ def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, ite
                                    font=('TkDefaultFont', int(0.25 * ((canvas_width - 2 * edge_dist) / cols))), fill='white')  # Print the best value in the middle of the cell
 
                 if [row, col] in terminal:  # If this cell is a terminal state
+                    print("TERMINAL: ", row, col)
                     x1 = x1 + small_rect_diff
                     y1 = y1 + small_rect_diff
                     x2 = x2 - small_rect_diff
@@ -120,7 +129,7 @@ def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, ite
 
             else:  # This is a boulder state
                 x1 = edge_dist + col * ((canvas_width - 2 * edge_dist) / cols)
-                y1 = edge_dist + row * ((canvas_height - edge_dist - bottom_space) / rows)
+                y1 = edge_dist + (rows - row - 1) * ((canvas_height - edge_dist - bottom_space) / rows)
                 x2 = x1 + ((canvas_width - 2 * edge_dist) / cols)
                 y2 = y1 + ((canvas_height - edge_dist - bottom_space) / rows)
                 canvas.create_rectangle(x1, y1, x2, y2, fill='grey', outline='white')

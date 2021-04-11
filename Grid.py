@@ -11,7 +11,7 @@ class Grid:
         file = open(filename, "r")
         gridString = file.read()
         file.close()
-        lines = gridString.split("\r\n")
+        lines = gridString.split("\n")
         self.horizontal = int(lines[0].split('=')[1])
         self.vertical = int(lines[1].split('=')[1])
         self.gridStates = []
@@ -21,9 +21,10 @@ class Grid:
         self.robotStartState = _get_robot_start_state_(lines[4])
         self.K = int(lines[5].split('=')[1])
         self.episodes = int(lines[6].split('=')[1])
-        self.discount = float(lines[7].split('=')[1])
-        self.noise = float(lines[8].split('=')[1])
-        self.transactionCost = float(lines[9].split('=')[1])
+        self.alpha = float(lines[7].split('=')[1])
+        self.discount = float(lines[8].split('=')[1])
+        self.noise = float(lines[9].split('=')[1])
+        self.transactionCost = float(lines[10].split('=')[1])
 
     def _get_terminal_states_(self, inputStates):
         result = []

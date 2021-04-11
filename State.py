@@ -1,3 +1,4 @@
+import random
 # coding=utf-8
 class State:
 
@@ -18,8 +19,25 @@ class State:
         self.boulder = boulder
 
     def get_max(self):
-        max = 0
+        max = -10
         for i in self.policy:
             if i[0] > max:
                 max = i[0]
         return max
+
+    def getPolicy(self):
+
+        #no uncertanty yet
+        max = self.get_max()
+        if max == 0:
+            values = []
+            for v in self.policy:
+                if v[0] == 0:
+                    values.append(v)
+
+            return random.choice(values)
+
+        for v in self.policy:
+            if v[0] == max:
+                return v
+
