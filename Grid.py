@@ -9,9 +9,10 @@ class Grid:
 
     def __init__(self, filename):
         file = open(filename, "r")
-        gridString = file.read()
+        lines = []
+        for line in file:
+            lines.append(line)
         file.close()
-        lines = gridString.split("\n")
         self.horizontal = int(lines[0].split('=')[1])
         self.vertical = int(lines[1].split('=')[1])
         self.gridStates = []
