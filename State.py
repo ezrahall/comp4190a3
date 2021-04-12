@@ -30,6 +30,7 @@ class State:
         max = self.get_max()
         retVal = None
 
+        #if the max is 0, check if any other are also 0, if they are choose one randomly 
         if max == 0:
             values = []
             for v in self.policy:
