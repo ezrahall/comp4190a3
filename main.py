@@ -8,13 +8,13 @@ import tkinter as tk
 def main():
 
     window = tk.Tk()
+    window2 = tk.Tk()
 
     #Grid for Value iteration
     valueIterationGrid = Grid('gridConf.txt')
 
     #Grid for Q-learning
     qLearningGrid = Grid('gridConf.txt')
-
 
     valueIteration = ValueIteration(valueIterationGrid)
     valueIterationGrid = valueIteration.runValueIteration()
@@ -35,10 +35,11 @@ def main():
     draw_board(window, VIGridPolicies, [row[:-1] for row in terminal_states_VI], boulder_states_VI,
                max_reward(terminal_states_VI), max_punishment(terminal_states_VI), valueIterationGrid.K, 'value-iteration')
 
-    draw_board(window, QLGPolicies, [row[:-1] for row in terminal_states_QL], boulder_states_QL,
+    draw_board(window2, QLGPolicies, [row[:-1] for row in terminal_states_QL], boulder_states_QL,
                max_reward(terminal_states_QL), max_punishment(terminal_states_QL), qLearningGrid.episodes, 'q-learning')
 
     window.mainloop()
+    window2.mainloop()
 
 
 def max_reward(terminal_states):
@@ -63,8 +64,8 @@ def max_punishment(terminal_states):
 
 def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, iterations, learningType):
 
-    canvas_width = 750  # Width of the window
-    canvas_height = 450  # Length of the window
+    canvas_width = 1000  # Width of the window
+    canvas_height = 600  # Length of the window
 
     edge_dist = 10  # Distance of the board to the edge of the window
     bottom_space = 100  # Distance from the bottom of the board to the bottom of the window
