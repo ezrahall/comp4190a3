@@ -6,7 +6,7 @@ import tkinter as tk
 
 
 def main():
-
+    '''
     window = tk.Tk()
     window2 = tk.Tk()
 
@@ -40,6 +40,54 @@ def main():
 
     window.mainloop()
     window2.mainloop()
+    '''
+    #read in results file
+    results = open("results.txt","r")
+    questions = []
+    for line in results:
+        line = line.replace("\n","")
+        line = line.replace("\r","")
+        questions.append(line.split(","))
+
+    windows = []
+    for q in questions:
+        window = tk.Tk()
+        grid = Grid('gridConf.txt')
+
+        if(q[3] == "MDP"):
+            valueIteration = ValueIteration(grid)
+            grid = valueIteration.runValueIteration()
+        elif(q[3] == "RL"):
+            qValueLearning = QValueLearning(grid)
+            grid = qValueLearning.runQValueLearning()
+
+        gridPolicies = grid.get_policies_()
+        terminal_states = grid.terminal
+        boulder_states = grid.boulder
+
+        answer = ""
+
+        if(q[4] == "stateValue"):
+            answer = grid.gridStates[int(q[1])][int(q[0])].get_max()
+        elif(q[4] == "bestPolicy"):
+            answer = grid.gridStates[int(q[1])][int(q[0])].getPolicy(0.0)[1]
+        elif(q[4] == "bestQValue" and q[3] == "RL"):
+            answer = grid.gridStates[int(q[1])][int(q[0])].getPolicy(0.0)[0]
+
+        index = questions.index(q) + 1
+        answer = "Question " + str(index) + ": " + ",".join(q) + ": " + str(answer)
+
+        if(q[3] == "MDP"):
+            draw_board(window, gridPolicies, [row[:-1] for row in terminal_states], boulder_states,
+                max_reward(terminal_states), max_punishment(terminal_states), q[2], 'value-iteration', answer)
+        elif(q[3] == "RL"):
+            draw_board(window, gridPolicies, [row[:-1] for row in terminal_states], boulder_states,
+               max_reward(terminal_states), max_punishment(terminal_states),  q[2], 'q-learning', answer)
+
+        windows.append(window)
+
+    for window in windows:
+        window.mainloop()
 
 
 def max_reward(terminal_states):
@@ -50,7 +98,7 @@ def max_reward(terminal_states):
             max_reward = state[2]
 
     return max_reward
-
+        
 
 def max_punishment(terminal_states):
     max_punishment = float('inf')
@@ -62,7 +110,7 @@ def max_punishment(terminal_states):
     return max_punishment
 
 
-def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, iterations, learningType):
+def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, iterations, learningType, answer):
 
     canvas_width = 1000  # Width of the window
     canvas_height = 600  # Length of the window
@@ -144,12 +192,16 @@ def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, ite
                 canvas.create_rectangle(x1, y1, x2, y2, fill='grey', outline='white')
 
     if(learningType == 'value-iteration'):
-        canvas.create_text(int(canvas_width / 2), canvas_height - bottom_space / 2, font=('TkDefaultFont', int(bottom_space / 4)),
+        canvas.create_text(int(canvas_width / 2), (canvas_height - bottom_space / 2) - 10, font=('TkDefaultFont', int(bottom_space / 4)),
                         text=('Values after ' + str(iterations) + ' iterations (Value Iteration)'), fill='white')  # Write text at the bottom of the canvas
 
     elif(learningType == 'q-learning'):
-        canvas.create_text(int(canvas_width / 2), canvas_height - bottom_space / 2, font=('TkDefaultFont', int(bottom_space / 4)),
+        canvas.create_text(int(canvas_width / 2), (canvas_height - bottom_space / 2) - 10, font=('TkDefaultFont', int(bottom_space / 4)),
                         text=('Values after ' + str(iterations) + ' episodes (Q-Learning)'), fill='white')  # Write text at the bottom of the canvas
+
+    canvas.create_text(int(canvas_width / 2), canvas_height - bottom_space / 5, font=('TkDefaultFont', int(bottom_space / 6)),
+                    text=(answer), fill='white')  # Write text at the bottom of the canvas
+    print(answer)
 
     canvas.pack()
 

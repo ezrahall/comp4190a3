@@ -47,7 +47,7 @@ class State:
         doUnexpectedMove = False
         unexpectedMove2 = False
         #Test if we take an unexpected move
-        if random.random() <= noise:
+        if random.random() < noise:
             doUnexpectedMove = True
             if random.random() <= .5:
                 #of the two remaining options, which one do we take (50/50)
