@@ -9,26 +9,34 @@ def main():
 
     window = tk.Tk()
 
-    grid = Grid('gridConf.txt')
+    #Grid for Value iteration
+    valueIterationGrid = Grid('gridConf.txt')
 
-    #valueIteration = ValueIteration(grid)
-    #grid = valueIteration.runValueIteration()
-
-
-    qValueLearning = QValueLearning(grid)
-    grid = qValueLearning.runQValueLearning()
+    #Grid for Q-learning
+    qLearningGrid = Grid('gridConf.txt')
 
 
-    gridPolicies = grid.get_policies_()
+    valueIteration = ValueIteration(valueIterationGrid)
+    valueIterationGrid = valueIteration.runValueIteration()
 
-    # Sample grid after 10 iterations
+    qValueLearning = QValueLearning(qLearningGrid)
+    qLearningGrid = qValueLearning.runQValueLearning()
+
+    VIGridPolicies = valueIterationGrid.get_policies_()
+    QLGPolicies = qLearningGrid.get_policies_()
 
 
-    terminal_states = grid.terminal
-    boulder_states = grid.boulder
+    terminal_states_VI = valueIterationGrid.terminal
+    terminal_states_QL = qLearningGrid.terminal
 
-    draw_board(window, gridPolicies, [row[:-1] for row in terminal_states], boulder_states,
-               max_reward(terminal_states), max_punishment(terminal_states), grid.K)
+    boulder_states_VI = valueIterationGrid.boulder
+    boulder_states_QL = qLearningGrid.boulder
+
+    draw_board(window, VIGridPolicies, [row[:-1] for row in terminal_states_VI], boulder_states_VI,
+               max_reward(terminal_states_VI), max_punishment(terminal_states_VI), valueIterationGrid.K, 'value-iteration')
+
+    draw_board(window, QLGPolicies, [row[:-1] for row in terminal_states_QL], boulder_states_QL,
+               max_reward(terminal_states_QL), max_punishment(terminal_states_QL), qLearningGrid.episodes, 'q-learning')
 
     window.mainloop()
 
@@ -53,14 +61,14 @@ def max_punishment(terminal_states):
     return max_punishment
 
 
-def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, iterations):
+def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, iterations, learningType):
 
-    canvas_width = 1000  # Width of the window
-    canvas_height = 600  # Length of the window
+    canvas_width = 750  # Width of the window
+    canvas_height = 450  # Length of the window
 
     edge_dist = 10  # Distance of the board to the edge of the window
     bottom_space = 100  # Distance from the bottom of the board to the bottom of the window
-    small_rect_diff = 10  # For terminal states, distance from outside rectangle to inside rectangle
+    small_rect_diff = 5  # For terminal states, distance from outside rectangle to inside rectangle
 
     rows = len(grid)  # Number of rows in the grid
     cols = len(grid[0])  # Number of columns in the grid
@@ -134,8 +142,13 @@ def draw_board(window, grid, terminal, boulders, max_reward, max_punishment, ite
                 y2 = y1 + ((canvas_height - edge_dist - bottom_space) / rows)
                 canvas.create_rectangle(x1, y1, x2, y2, fill='grey', outline='white')
 
-    canvas.create_text(int(canvas_width / 2), canvas_height - bottom_space / 2, font=('TkDefaultFont', int(bottom_space / 2)),
-                       text=('VALUE AFTER ' + str(iterations) + ' ITERATIONS'), fill='white')  # Write text at the bottom of the canvas
+    if(learningType == 'value-iteration'):
+        canvas.create_text(int(canvas_width / 2), canvas_height - bottom_space / 2, font=('TkDefaultFont', int(bottom_space / 4)),
+                        text=('Values after ' + str(iterations) + ' iterations (Value Iteration)'), fill='white')  # Write text at the bottom of the canvas
+
+    elif(learningType == 'q-learning'):
+        canvas.create_text(int(canvas_width / 2), canvas_height - bottom_space / 2, font=('TkDefaultFont', int(bottom_space / 4)),
+                        text=('Values after ' + str(iterations) + ' episodes (Q-Learning)'), fill='white')  # Write text at the bottom of the canvas
 
     canvas.pack()
 
