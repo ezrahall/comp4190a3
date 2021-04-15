@@ -1,5 +1,5 @@
-import random
 # coding=utf-8
+import random
 class State:
 
     def __init__(self, X, Y):

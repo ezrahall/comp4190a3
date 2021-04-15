@@ -1,5 +1,12 @@
 from State import State
+'''
+Grid.py
 
+Class file for storing the grid and parsing input
+
+'''
+
+# Get the state where the robot starts
 def _get_robot_start_state_(inputState):
     values = inputState.split('RobotStartState={')[1].split('}')[0].split(',')
     return [int(values[0]), int(values[1])]
@@ -27,6 +34,7 @@ class Grid:
         self.noise = float(lines[9].split('=')[1])
         self.transactionCost = float(lines[10].split('=')[1])
 
+    # Parse the input to find the terminal states
     def _get_terminal_states_(self, inputStates):
         result = []
         values = inputStates.split('Terminal=')[1]
@@ -41,6 +49,7 @@ class Grid:
             self.gridStates[int(i[1])][int(i[0])].set_terminal(True)
         return result
 
+    # Parse the input to find the boulder states
     def _get_boulder_states_(self, inputStates):
         result = []
         values = inputStates.split('Boulder=')[1]
@@ -54,6 +63,7 @@ class Grid:
             self.gridStates[int(i[1])][int(i[0])].set_boulder(True)
         return result
 
+    # Create the grid based on input
     def _init_grid(self):
         for i in range(0, self.vertical):
             row = []
@@ -61,6 +71,7 @@ class Grid:
                 row.append(State(j, i))
             self.gridStates.append(row)
 
+    # Get the policies and their values at each state
     def get_policies_(self):
         result = []
         for i in range(0, len(self.gridStates)):
