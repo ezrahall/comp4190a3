@@ -2,7 +2,9 @@
 '''
 QValueLearning.py
 
-Class file for the Q value learning algorithm
+Class file for the Q value learning algorithm.
+I did not specifically implement the update, getValue, and getQValue methods however their functionality is all 
+ within this file and State.py
 
 '''
 
