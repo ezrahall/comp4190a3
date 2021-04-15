@@ -1,3 +1,10 @@
+'''
+Main file for comp4190 A3
+Reads in queries from results.txt using the grid defined in gridConf.txt
+
+Grids are outputted as tkinter windows
+
+'''
 # coding=utf-8
 from Grid import Grid
 from ValueIteration import ValueIteration
@@ -6,41 +13,7 @@ import tkinter as tk
 
 
 def main():
-    '''
-    window = tk.Tk()
-    window2 = tk.Tk()
 
-    #Grid for Value iteration
-    valueIterationGrid = Grid('gridConf.txt')
-
-    #Grid for Q-learning
-    qLearningGrid = Grid('gridConf.txt')
-
-    valueIteration = ValueIteration(valueIterationGrid)
-    valueIterationGrid = valueIteration.runValueIteration()
-
-    qValueLearning = QValueLearning(qLearningGrid)
-    qLearningGrid = qValueLearning.runQValueLearning()
-
-    VIGridPolicies = valueIterationGrid.get_policies_()
-    QLGPolicies = qLearningGrid.get_policies_()
-
-
-    terminal_states_VI = valueIterationGrid.terminal
-    terminal_states_QL = qLearningGrid.terminal
-
-    boulder_states_VI = valueIterationGrid.boulder
-    boulder_states_QL = qLearningGrid.boulder
-
-    draw_board(window, VIGridPolicies, [row[:-1] for row in terminal_states_VI], boulder_states_VI,
-               max_reward(terminal_states_VI), max_punishment(terminal_states_VI), valueIterationGrid.K, 'value-iteration')
-
-    draw_board(window2, QLGPolicies, [row[:-1] for row in terminal_states_QL], boulder_states_QL,
-               max_reward(terminal_states_QL), max_punishment(terminal_states_QL), qLearningGrid.episodes, 'q-learning')
-
-    window.mainloop()
-    window2.mainloop()
-    '''
     #read in results file
     results = open("results.txt","r")
     questions = []
@@ -50,6 +23,7 @@ def main():
         questions.append(line.split(","))
 
     windows = []
+    #do queries for each line in the file
     for q in questions:
         window = tk.Tk()
         grid = Grid('gridConf.txt')
@@ -86,6 +60,7 @@ def main():
 
         windows.append(window)
 
+    #display all queries
     for window in windows:
         window.mainloop()
 

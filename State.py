@@ -1,3 +1,9 @@
+'''
+State.py
+A state within the grid
+
+'''
+
 import random
 # coding=utf-8
 class State:
